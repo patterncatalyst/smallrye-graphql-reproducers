@@ -15,13 +15,13 @@ Requires JDK 21+ and Maven 3.9+.
 
 ```console
 # Quarkus 3.40.1 (SmallRye GraphQL 2.18.5, graphql-java 25.0)
-mvn verify
+mvn clean verify
 
 # Quarkus 4.0.0.Beta1 (SmallRye GraphQL 3.0.0.Beta7, graphql-java 26.0)
-mvn verify -Dquarkus.platform.version=4.0.0.Beta1
+mvn clean verify -Dquarkus.platform.version=4.0.0.Beta1
 
 # Any SmallRye GraphQL build pinned over the BOM, e.g. a locally installed main
-mvn verify -Dquarkus.platform.version=4.0.0.Beta1 -Dsmallrye-graphql.version=3.0.0.Beta-SNAPSHOT
+mvn clean verify -Dquarkus.platform.version=4.0.0.Beta1 -Dsmallrye-graphql.version=3.0.0.Beta-SNAPSHOT
 ```
 
 Expected result on all three lines today:
