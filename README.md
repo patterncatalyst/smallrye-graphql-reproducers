@@ -6,8 +6,8 @@ the bug is fixed. A control test in each module passes, which shows the app itse
 
 | Module | Bug | Issue |
 |---|---|---|
-| [`id-list-argument`](id-list-argument) | `@Id List<String>` prints `[ID]` in the schema, but every request fails with `Unknown Scalar Type [java.util.List]` | _link added after filing_ |
-| [`deprecated-introspection`](deprecated-introspection) | `@io.smallrye.graphql.api.Deprecated(reason=…)` and `@java.lang.Deprecated` are printed as `@deprecated`, but introspection reports `isDeprecated: false` | _link added after filing_ |
+| [`id-list-argument`](id-list-argument) | `@Id List<String>` prints `[ID]` in the schema, but every request fails with `Unknown Scalar Type [java.util.List]` | [smallrye/smallrye-graphql#2733](https://github.com/smallrye/smallrye-graphql/issues/2733) |
+| [`deprecated-introspection`](deprecated-introspection) | `@io.smallrye.graphql.api.Deprecated(reason=…)` and `@java.lang.Deprecated` are printed as `@deprecated`, but introspection reports `isDeprecated: false` | [smallrye/smallrye-graphql#2734](https://github.com/smallrye/smallrye-graphql/issues/2734) |
 
 ## Run
 
