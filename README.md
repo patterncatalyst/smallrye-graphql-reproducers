@@ -8,7 +8,7 @@ the bug is fixed. A control test in each module passes, which shows the app itse
 |---|---|---|
 | [`id-list-argument`](id-list-argument) | `@Id List<String>` prints `[ID]` in the schema, but every request fails with `Unknown Scalar Type [java.util.List]` | [smallrye/smallrye-graphql#2733](https://github.com/smallrye/smallrye-graphql/issues/2733) |
 | [`deprecated-introspection`](deprecated-introspection) | `@io.smallrye.graphql.api.Deprecated(reason=…)` and `@java.lang.Deprecated` are printed as `@deprecated`, but introspection reports `isDeprecated: false` | [smallrye/smallrye-graphql#2734](https://github.com/smallrye/smallrye-graphql/issues/2734) |
-| [`client-extensions`](client-extensions) | Client request `extensions` never reach graphql-java's `ExecutionInput`, and a hash-only APQ request is refused, so `ApolloPersistedQuerySupport` cannot be plugged in | _link added after filing_ |
+| [`client-extensions`](client-extensions) | Client request `extensions` never reach graphql-java's `ExecutionInput`, and a hash-only APQ request is refused, so `ApolloPersistedQuerySupport` cannot be plugged in | [smallrye/smallrye-graphql#2735](https://github.com/smallrye/smallrye-graphql/issues/2735) |
 
 ## Run
 
