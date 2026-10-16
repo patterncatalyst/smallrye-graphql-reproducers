@@ -1,6 +1,6 @@
 # SmallRye GraphQL reproducers
 
-Minimal Quarkus apps that reproduce two SmallRye GraphQL server bugs. Each module holds one `@GraphQLApi`
+Minimal Quarkus apps that reproduce SmallRye GraphQL server bugs. Each module holds one `@GraphQLApi`
 class and a `@QuarkusTest` that asserts the **expected** behaviour, so the bug tests fail today and pass once
 the bug is fixed. A control test in each module passes, which shows the app itself is wired correctly.
 
@@ -8,6 +8,7 @@ the bug is fixed. A control test in each module passes, which shows the app itse
 |---|---|---|
 | [`id-list-argument`](id-list-argument) | `@Id List<String>` prints `[ID]` in the schema, but every request fails with `Unknown Scalar Type [java.util.List]` | [smallrye/smallrye-graphql#2733](https://github.com/smallrye/smallrye-graphql/issues/2733) |
 | [`deprecated-introspection`](deprecated-introspection) | `@io.smallrye.graphql.api.Deprecated(reason=…)` and `@java.lang.Deprecated` are printed as `@deprecated`, but introspection reports `isDeprecated: false` | [smallrye/smallrye-graphql#2734](https://github.com/smallrye/smallrye-graphql/issues/2734) |
+| [`client-extensions`](client-extensions) | Client request `extensions` never reach graphql-java's `ExecutionInput`, and a hash-only APQ request is refused, so `ApolloPersistedQuerySupport` cannot be plugged in | _link added after filing_ |
 
 ## Run
 
@@ -29,6 +30,7 @@ Expected result on all three lines today:
 ```
 id-list-argument          Tests run: 4, Failures: 2   (listOfIdsAsLiteral, listOfIdsAsVariable)
 deprecated-introspection  Tests run: 5, Failures: 4   (every introspection test; the printed-schema test passes)
+client-extensions         Tests run: 5, Failures: 3   (extensions, hash-only, PersistedQueryMarker; both controls pass)
 ```
 
 Reproduced on 2026-10-16 with `main` at `8a13b16` (three commits after `3.0.0.Beta8`), built with
@@ -64,6 +66,22 @@ Introspection disagrees: `isDeprecated: false` and `deprecationReason: null` for
 and `oldItem`, and `fields` without `includeDeprecated` still lists the deprecated fields. graphql-java's
 `GraphQLFieldDefinition.isDeprecated()` is `deprecationReason != null`, which only
 `Builder.deprecate(reason)` sets; SmallRye attaches the annotation as a directive and never calls it.
+
+## `client-extensions`
+
+Uses only SmallRye's documented `@Observes GraphQL.Builder` hook (`quarkus.smallrye-graphql.events.enabled=true`)
+to add an instrumentation that echoes `ExecutionInput#getExtensions()` and graphql-java's own
+`ApolloPersistedQuerySupport` with one known document (`{ hello }`).
+
+```console
+{"query":"{ hello }","extensions":{"probe":"x"}}           → {"data":{"hello":"world"},"extensions":{"received":{}}}
+{"extensions":{"persistedQuery":{"version":1,"sha256Hash":"001c…3065"}}}   → Missing 'query' field in the request
+{"query":"PersistedQueryMarker","extensions":{…same…}}     → Unparseable input document
+```
+
+`ExecutionService.execute` never calls `ExecutionInput.Builder.extensions(...)`, rejects an empty `query` before
+graphql-java runs, and `DocumentSupplier` re-parses the query text through SmallRye's `QueryCache`.
+Related: smallrye/smallrye-graphql#2321.
 
 ## License
 

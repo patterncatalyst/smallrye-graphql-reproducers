@@ -9,6 +9,7 @@
   <modules>
     <module>id-list-argument</module>
     <module>deprecated-introspection</module>
+    <module>client-extensions</module>
   </modules>
 
   <properties>
